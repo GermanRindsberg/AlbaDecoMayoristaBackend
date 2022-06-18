@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Pedido</title>
+</head>
+
+<body
+    style=" max-width: 600px;background-color: rgb(255, 255, 255);margin: 20px; padding: 20px; border: solid 4px rgb(245, 217, 198); border-radius:50px; ">
+
+    <table style="margin:0 auto; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <td COLSPAN=5>
+                    <a href="https://www.albadeco.com.ar/">
+                        <img width="20%" style="display:block; margin: 1.5% 3%; align-items: center;"
+                            src="https://i.ibb.co/mchFWSJ/logo.png">
+                    </a>
+                </td>
+                <td><label for="">Fecha de realizacion del pedido {{fecha}}</label></td>
+            </tr>
+            <tr>
+                <td COLSPAN=6>
+                    <h2> Hola {{nombreUsuario}}, a continuacion detallamos tu pedido:</h2>
+                </td>
+            </tr>
+
+        </thead>
+
+        <thead style="background-color:rgb(245, 217, 198);">
+            <tr>
+                <th colspan="2" style="border: black solid 2px;">Nombre del producto</th>
+                <th style="border: black solid 2px;">Variante/color</th>
+                <th style="border: black solid 2px;">Cantidad</th>
+                <th style="border: black solid 2px;">Precio Unitario</th>
+                <th style="border: black solid 2px;">Sub Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for producto in listaProductos %}
+            <tr style="border:2px solid black;">
+                <td colspan="2" style="border:2px solid black;">{{producto[0]}}</td>
+                <td style="text-align: center; align-items: center; border:2px solid black;">
+                    <div
+                        style="background-color:{{producto[1]}} ; width: 20px;  height: 20px; border-radius: 50%; margin: auto;">
+                    </div>
+                </td>
+                <td style="text-align: center; border:2px solid black;">{{producto[2]}}</td>
+                <td style="text-align: center; border:2px solid black;">$ {{producto[3]}}</td>
+                <td style="text-align: center;">$ {{producto[2] * producto[3]}}</td>
+            </tr>
+            {% endfor %}
+            <tr style="">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="border:2px solid black; text-align: end; background-color: rgb(245, 217, 198);"><b> Subtotal
+                    </b></td>
+                <td style="border:2px solid black; text-align: center; background-color: rgb(245, 217, 198);">$
+                    <b>{{subTotal}}</b>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="border:2px solid black; text-align: end;"><b> Descuento</b></td>
+                <td style="border:2px solid black;  text-align: center;">$<b>{{descuento}}</b></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="border:2px solid black; text-align: end;background-color: rgb(245, 217, 198);"><b> Total </b>
+                </td>
+                <td style="border:2px solid black;  text-align: center;background-color: rgb(245, 217, 198);; ">$
+                    <b>{{total}}</b>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>Para ver este pedido o los anteriores en nuestra web haz click <a href="">Aqui</a> </p>
+</body>
+
+</html>
