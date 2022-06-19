@@ -16,8 +16,6 @@ class UsuarioSchema(ma.SQLAlchemySchema):
     perfil= ma.Nested(PerfilSchema)
     pedidos = ma.Nested(pedidosSchema)
 
-
-
 class UserRegisterSchema(ma.Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)
