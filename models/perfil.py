@@ -8,5 +8,6 @@ class Perfil(db.Model, BaseModelMixin):
     cuit = db.Column(db.String(50))
     celular = db.Column(db.String(30))
     telefono = db.Column(db.String(30))
-    usuario = db.relationship("Usuario", uselist=False)
+    
     usuarioId = db.Column(db.Integer, db.ForeignKey("usuario.id"), unique=True, nullable=False)
+    usuario = db.relationship("Usuario", back_populates="perfil")

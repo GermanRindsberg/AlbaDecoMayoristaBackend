@@ -1,4 +1,3 @@
-from schemas.usuarioSchema import usuarioSchema
 from config.marsh import ma
 from models.pedido import Pedido
 from schemas.maestroDetalleSchema import maestroDetallesSchema
@@ -19,7 +18,6 @@ class PedidoSchema(ma.SQLAlchemySchema):
     idUsuario=ma.auto_field()
     #FORANEAS
     maestroDetalle=ma.Nested(maestroDetallesSchema)
-    usuario=ma.Nested(usuarioSchema)
     
     
 pedidoSchema = PedidoSchema()

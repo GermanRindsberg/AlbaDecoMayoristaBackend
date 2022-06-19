@@ -15,9 +15,9 @@ class Pedido(db.Model, BaseModelMixin):
     transporte=db.Column(db.String(200))
     #FORANEAS
     maestroDetalle=db.relationship(MaestroDetalle, lazy='select', back_populates='pedido') 
-    usuario=db.relationship("Usuario", lazy='select') 
     idUsuario=db.Column(db.Integer, db.ForeignKey("usuario.id"), unique=False)
-
+    usuario = db.relationship("Usuario", uselist=False)
+    
     @classmethod
     def getPorIdUsuario(cls, idUsuario):
         listadoProductos = cls.query.filter_by(idUsuario=idUsuario).all()

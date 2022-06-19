@@ -13,7 +13,6 @@ class Localidad(db.Model, BaseModelMixin):
     codigoPostal=db.Column(db.String(50))
     provincia = db.relationship(Provincia, back_populates="localidad", uselist=False)
     direccion_id = db.Column(db.Integer, db.ForeignKey("direccion.id"), unique=True, nullable=False)
-    
     direccion = db.relationship("Direccion", back_populates="localidad")
 
 class Direccion(db.Model, BaseModelMixin):
@@ -24,7 +23,7 @@ class Direccion(db.Model, BaseModelMixin):
     depto = db.Column(db.String(10))
     observaciones= db.Column(db.String(100))
     #foraneas
-    usuario = db.relationship("Usuario", uselist=False)
     usuarioId = db.Column(db.Integer, db.ForeignKey("usuario.id"), unique=True, nullable=False)
+    usuario = db.relationship("Usuario", back_populates="direccion")
     localidad = db.relationship(Localidad, back_populates="direccion", uselist=False)
     

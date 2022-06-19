@@ -1,18 +1,21 @@
 from marshmallow import fields
 from config.marsh import ma
 from models.usuario import Usuario
-from schemas.perfilSchema import PerfilSchema
-from schemas.direccionSchema import DireccionSchema
-
+from schemas.direccionSchema import DireccionSchema, direccionSchema
+from schemas.pedidoSchema import PedidoSchema, pedidosSchema
+from schemas.perfilSchema import PerfilSchema, perfilSchema
 
 class UsuarioSchema(ma.SQLAlchemySchema):
-    perfil = ma.Nested(PerfilSchema)
-    direccion= ma.Nested(DireccionSchema)
     class Meta:
-        ordered = True
-        fields = ('id', 'email','tipoUsuario', 'perfil', 'direccion','activo')
-        #fields = ('id', 'email','activo')
-        model = Usuario
+           model=Usuario
+    id=ma.auto_field()
+    email=ma.auto_field()
+    tipoUsuario=ma.auto_field()
+    #FORANEAS
+    direccion = ma.Nested(DireccionSchema)
+    perfil= ma.Nested(PerfilSchema)
+    pedidos = ma.Nested(pedidosSchema)
+
 
 
 class UserRegisterSchema(ma.Schema):
@@ -23,3 +26,5 @@ class UserRegisterSchema(ma.Schema):
 usuarioRegisterSchema = UserRegisterSchema()
 usuarioSchema = UsuarioSchema()
 usuariosSchema = UsuarioSchema(many=True)
+
+

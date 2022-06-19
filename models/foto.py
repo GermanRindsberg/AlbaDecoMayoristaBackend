@@ -1,8 +1,5 @@
 
-from time import sleep 
 from config.db import db, BaseModelMixin
-from models.producto import Producto
-from datetime import datetime
 from os import remove
 
 
@@ -12,8 +9,9 @@ class Foto(db.Model, BaseModelMixin):
     direccionImage = db.Column(db.String(100), unique=False)
     posicion = db.Column(db.Integer)
     # FORANEAS
-    idProducto = db.Column(db.Integer, db.ForeignKey(Producto.id), unique=False)
     producto = db.relationship("Producto", uselist=False)
+    idProducto = db.Column(db.Integer, db.ForeignKey("producto.id"), unique=False)
+ 
 
     @classmethod
     def guardarFoto(self, archivoFoto, fotoId):
@@ -25,6 +23,7 @@ class Foto(db.Model, BaseModelMixin):
 
     @classmethod
     def eliminarFotosPorIdProducto(self, idProducto, listaNoBorrar):
+        from models.producto import Producto
         fotos = Producto.get_by_id(idProducto).fotos
         valores=[]
         for elemento in listaNoBorrar:
@@ -39,6 +38,7 @@ class Foto(db.Model, BaseModelMixin):
     
     @classmethod
     def getAllFotosByidProducto(self, idProducto):
+        from models.producto import Producto
         return Producto.get_by_id(idProducto).fotos
          
        

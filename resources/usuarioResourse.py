@@ -110,7 +110,6 @@ class TokenResource(Resource):
 
         if usuario is None:
             return bad_responseEmail
-
         
         if not usuario.check_password(password) or password=='facebook':
             return bad_responsePassword

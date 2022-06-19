@@ -10,11 +10,10 @@ class Usuario(db.Model, BaseModelMixin):
     password = db.Column(db.String(100), nullable=False)
     activo=db.Column(db.String(10), nullable=False)
     tipoUsuario=db.Column(db.String(100), nullable=False)
-
-#FORANEAS
-    direccion = db.relationship(Direccion, lazy='select', back_populates='usuario')
-    perfil = db.relationship(Perfil, lazy='select', back_populates='usuario')
-    pedidos = db.relationship(Pedido, lazy='select', back_populates='usuario')
+    #FORANEAS
+    perfil = db.relationship(Perfil,back_populates="usuario", uselist=False)#este
+    direccion = db.relationship(Direccion, back_populates="usuario", uselist=False)
+    pedidos=db.relationship(Pedido, lazy='select', back_populates='usuario') 
 
 
     def set_password(self, password):

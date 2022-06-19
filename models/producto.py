@@ -1,4 +1,5 @@
 from config.db import db, BaseModelMixin
+from models.foto import Foto
 from models.subCategoria import SubCategoria
 from models.categoria import Categoria
 
@@ -23,7 +24,7 @@ class Producto(db.Model, BaseModelMixin):
     #variantes y fotos trae todas las hijas que apunten a este idProducto
     variantes= db.relationship('Variante', lazy='select', back_populates='producto')
     #fotos
-    fotos = db.relationship('Foto', lazy='select', back_populates='producto')
+    fotos = db.relationship(Foto, lazy='select', back_populates='producto')
         
     
 
