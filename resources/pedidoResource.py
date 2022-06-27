@@ -1,22 +1,23 @@
 from datetime import date
 from flask import request
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required,get_jwt_identity
 from models.maestroDetalle import MaestroDetalle
 from models.pedido import Pedido
 from schemas.pedidoSchema import pedidosSchema, pedidoSchema
 from resources.emailService import enviarEmailPedidoRecibido, enviarEmailPedidoEnviado, enviarEmailPedidoSeñado
 
 class PedidoListResource(Resource):
+ 
     def get(self):
         pedidos = Pedido.get_all()
         return pedidosSchema.dump(pedidos)
-
+  
+    @jwt_required()
     def post(self):
-        
         form_data: dict = request.get_json()
         nombreUsuario=form_data['nombreUsuario']
         emailUsuario=form_data['emailUsuario']
-
         pedido = Pedido()
         pedido.fechaPedido=date.today()
         if form_data['montoTotal']:
@@ -27,7 +28,7 @@ class PedidoListResource(Resource):
             pedido.descuento=form_data['descuento']
         else:
             pedido.descuento=0.0
-        pedido.idUsuario=form_data['idUsuario']
+        pedido.idUsuario=get_jwt_identity()
         pedido.estado='recibido'
         pedido.save(is_new=True)
 
@@ -58,11 +59,12 @@ class PedidoListResource(Resource):
 
 
 class PedidoResource(Resource):
-    
+
     def get(self, idPedido):
         pedido = Pedido.get_by_id(idPedido)
         return pedidoSchema.dump(pedido)
-
+    
+    @jwt_required()
     def patch(self, idPedido):
         form_data: dict = request.get_json()
         pedido = Pedido.get_by_id(idPedido)
@@ -88,6 +90,7 @@ class PedidoResource(Resource):
         return 'editado'
   
 class PedidoPorUser(Resource):
+    
     def get(self, idUsuario):
         pedido = Pedido.getPorIdUsuario(idUsuario)
         return pedidosSchema.dump(pedido)

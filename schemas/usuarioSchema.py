@@ -1,9 +1,8 @@
 from marshmallow import fields
 from config.marsh import ma
 from models.usuario import Usuario
-from schemas.direccionSchema import DireccionSchema, direccionSchema
-from schemas.pedidoSchema import PedidoSchema, pedidosSchema
-from schemas.perfilSchema import PerfilSchema, perfilSchema
+from schemas.direccionSchema import DireccionSchema
+from schemas.perfilSchema import PerfilSchema
 
 class UsuarioSchema(ma.SQLAlchemySchema):
     class Meta:
@@ -14,7 +13,6 @@ class UsuarioSchema(ma.SQLAlchemySchema):
     #FORANEAS
     direccion = ma.Nested(DireccionSchema)
     perfil= ma.Nested(PerfilSchema)
-    pedidos = ma.Nested(pedidosSchema)
 
 class UserRegisterSchema(ma.Schema):
     email = fields.Email(required=True)

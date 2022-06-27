@@ -1,4 +1,4 @@
-from flask import Flask, json, render_template
+from flask import Flask, json
 from flask_migrate import Migrate
 from flask_restful import Api
 from werkzeug.exceptions import HTTPException
@@ -22,6 +22,7 @@ ma.init_app(app)
 
 migrate = Migrate()
 migrate.init_app(app, db)
+
 
 jwt = JWTManager(app)
 
@@ -50,7 +51,7 @@ def handle_exception(e: Exception):
 api = Api(app)
 
 api.add_resource(UserListResource, '/api/usuarios')
-api.add_resource(UsuarioResource, '/api/usuarios/<int:usuarioId>')
+api.add_resource(UsuarioResource, '/api/usuarios/usuario')
 api.add_resource(TokenResource, '/api/usuarios/token')
 
 api.add_resource(CategoriaListResource, '/api/categoria')

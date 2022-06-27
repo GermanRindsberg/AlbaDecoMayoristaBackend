@@ -13,7 +13,6 @@ class Usuario(db.Model, BaseModelMixin):
     #FORANEAS
     perfil = db.relationship(Perfil,back_populates="usuario", uselist=False)#este
     direccion = db.relationship(Direccion, back_populates="usuario", uselist=False)
-    pedidos=db.relationship(Pedido, lazy='select', back_populates='usuario') 
 
 
     def set_password(self, password):

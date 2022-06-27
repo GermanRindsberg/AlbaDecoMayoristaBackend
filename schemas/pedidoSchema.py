@@ -1,8 +1,10 @@
 from config.marsh import ma
 from models.pedido import Pedido
 from schemas.maestroDetalleSchema import maestroDetallesSchema
+from schemas.usuarioSchema import usuarioSchema
 
 class PedidoSchema(ma.SQLAlchemySchema):
+
     class Meta:
         model=Pedido
     id = ma.auto_field()
@@ -18,6 +20,7 @@ class PedidoSchema(ma.SQLAlchemySchema):
     idUsuario=ma.auto_field()
     #FORANEAS
     maestroDetalle=ma.Nested(maestroDetallesSchema)
+    usuario=ma.Nested(usuarioSchema)
     
     
 pedidoSchema = PedidoSchema()

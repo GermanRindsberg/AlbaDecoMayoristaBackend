@@ -1,11 +1,10 @@
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required,get_jwt_identity
 from flask import request
 from flask_restful import Resource
 from models.perfil import Perfil
 from models.usuario import Usuario
 from schemas.usuarioSchema import usuarioRegisterSchema,usuarioSchema, usuariosSchema
 from models.direccion import Direccion, Localidad, Provincia
-
 
 class UserListResource(Resource):
     #trae todos los usuarios
@@ -16,25 +15,20 @@ class UserListResource(Resource):
 #guarda usuario nuevo
     def post(self):
         form_data: dict = request.get_json()
-
         if form_data.get('email'):
             email = form_data.get('email')
         if form_data.get('password'):
             password = form_data.get('password')
-
         if Usuario.email_exists(email) and password!='facebook':
-             return {"errors":
-                 {"msg": 'Este email ya existe en nuestra base de datos '}}
+             return {"errors":{"msg": 'Este email ya existe en nuestra base de datos '}}
         elif Usuario.email_exists(email) and password=='facebook':
             usuario = Usuario.getByEmail(email)
             if usuario!=None:
-                return usuarioSchema.dump(usuario)
+                access_token = create_access_token(identity=usuario.id)
+                return {"token": access_token, "usuario": usuarioSchema.dump(usuario)}
             else:
                 return {"errors":
                  {"msg": 'Este email ya existe en nuestra base de datos '}}
-                
-
-          
         usuario = Usuario()
         usuario.email = email
         usuario.activo="activo"
@@ -91,6 +85,7 @@ class UserListResource(Resource):
         return usuarioSchema.dump(usuario), 201
 
 class TokenResource(Resource):
+   
     def post(self):
         form_data = request.get_json()
         bad_responseEmail = {"msg": "El usuario no existe"}
@@ -106,8 +101,6 @@ class TokenResource(Resource):
         
         usuario = Usuario.query.filter_by(email=email).first()
 
-        
-
         if usuario is None:
             return bad_responseEmail
         
@@ -116,19 +109,19 @@ class TokenResource(Resource):
 
         if usuario.activo=="inactivo":
             return bad_responseEmail
-
         access_token = create_access_token(identity=usuario.id)
-
         return {"token": access_token, "usuario": usuarioSchema.dump(usuario)}
-
-
+        
 class UsuarioResource(Resource):
-    def get(self, usuarioId):
-        usuario = Usuario.get_by_id(usuarioId)
-        return usuarioSchema.dump(usuario)
 
-    def patch(self, usuarioId):
-        usuario = Usuario.get_by_id(usuarioId)
+    @jwt_required()
+    def post(self):
+        usuario = Usuario.get_by_id(get_jwt_identity())
+        return usuarioSchema.dump(usuario)
+   
+    @jwt_required()
+    def patch(self):
+        usuario = Usuario.get_by_id(get_jwt_identity())
         form_data: dict = request.get_json()
         
         if form_data.get('password'):
@@ -168,8 +161,10 @@ class UsuarioResource(Resource):
         usuario.save(is_new=False)
         return usuarioSchema.dump(usuario)
 
-    def delete(self, usuarioId):
-        usuario = Usuario.get_by_id(usuarioId)
+  
+    @jwt_required()
+    def delete(self):
+        usuario = Usuario.get_by_id(get_jwt_identity())
         usuario.activo="inactivo"
         usuario.save(is_new=False)
         return 'inactivo', 204
