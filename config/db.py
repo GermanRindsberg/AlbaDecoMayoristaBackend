@@ -21,6 +21,10 @@ class BaseModelMixin():
     @classmethod
     def get_all_activos(cls):
           return cls.query.filter_by(activo='activo').all()
+  
+    @classmethod
+    def get_all_admins(cls):
+          return cls.query.filter_by(tipoUsuario='admin').all()
 
     @classmethod
     def get_by_id(cls, id):

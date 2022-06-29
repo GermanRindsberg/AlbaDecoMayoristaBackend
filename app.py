@@ -8,7 +8,7 @@ from config.db import db
 from config.marsh import ma
 from resources.subCategoriaResourse import SubCategoriaListResource, SubCategoriaResource
 from resources.categoriaResource import CategoriaListResource, CategoriaResource
-from resources.usuarioResourse import UserListResource, UsuarioResource, TokenResource
+from resources.usuarioResourse import UserListResource, UsuarioAdmin, UsuarioResource, TokenResource
 from resources.productoResource import ProductoListResource, ProductoResource
 from resources.pedidoResource import PedidoListResource, PedidoResource, PedidoPorUser
 
@@ -51,8 +51,9 @@ def handle_exception(e: Exception):
 api = Api(app)
 
 api.add_resource(UserListResource, '/api/usuarios')
-api.add_resource(UsuarioResource, '/api/usuarios/usuario')
+api.add_resource(UsuarioResource, '/api/usuarios/usuario/<int:idUsuario>')
 api.add_resource(TokenResource, '/api/usuarios/token')
+api.add_resource(UsuarioAdmin, '/api/usuarios/<int:idUsuario>')
 
 api.add_resource(CategoriaListResource, '/api/categoria')
 api.add_resource(CategoriaResource, '/api/categoria/<int:id>')

@@ -1,6 +1,7 @@
 from flask_jwt_extended import create_access_token, jwt_required,get_jwt_identity
-from flask import request
+from flask import jsonify, request
 from flask_restful import Resource
+from sqlalchemy import false, true
 from models.perfil import Perfil
 from models.usuario import Usuario
 from schemas.usuarioSchema import usuarioRegisterSchema,usuarioSchema, usuariosSchema
@@ -114,9 +115,8 @@ class TokenResource(Resource):
         
 class UsuarioResource(Resource):
 
-    @jwt_required()
-    def post(self):
-        usuario = Usuario.get_by_id(get_jwt_identity())
+    def get(self, idUsuario):
+        usuario = Usuario.get_by_id(idUsuario)
         return usuarioSchema.dump(usuario)
    
     @jwt_required()
@@ -168,3 +168,26 @@ class UsuarioResource(Resource):
         usuario.activo="inactivo"
         usuario.save(is_new=False)
         return 'inactivo', 204
+
+class UsuarioAdmin(Resource):
+   
+    @jwt_required()
+    def post(self, idUsuario):
+        if idUsuario==get_jwt_identity():
+            usuario = Usuario.get_by_id(get_jwt_identity())
+            if usuario.tipoUsuario=='admin':
+                return "true"
+            else:
+                return "false"
+   
+    @jwt_required()
+    def patch(self, idUsuario):
+        usuario = Usuario.get_by_id(idUsuario)
+        if usuario.tipoUsuario=='admin':
+            usuario.tipoUsuario='cliente'
+        else:
+            usuario.tipoUsuario='admin'
+        usuario.save(is_new=False)
+        return usuarioSchema.dump(usuario)
+
+
