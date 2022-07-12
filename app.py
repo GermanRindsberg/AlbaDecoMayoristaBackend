@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from config.db import db
 from config.marsh import ma
+from resources.portadaResource import PortadaListResource, PortadaResource
 from resources.subCategoriaResourse import SubCategoriaListResource, SubCategoriaResource
 from resources.categoriaResource import CategoriaListResource, CategoriaResource
 from resources.usuarioResourse import UserListResource, UsuarioAdmin, UsuarioResource, TokenResource
@@ -66,8 +67,10 @@ api.add_resource(ProductoResource, '/api/producto/<int:productoId>')
 
 api.add_resource(PedidoListResource, '/api/pedido')
 api.add_resource(PedidoResource, '/api/pedido/<int:idPedido>')
+api.add_resource(PedidoPorUser, '/api/pedido/misPedidos')
 
-api.add_resource(PedidoPorUser, '/api/pedido/misPedidos/<int:idUsuario>')
+api.add_resource(PortadaListResource, '/api/visuales')
+api.add_resource(PortadaResource, '/api/visuales/<int:idPortada>')
 
 if __name__ == '__main__':
      app.run(debug=False)

@@ -1,17 +1,23 @@
 from datetime import date
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required,get_jwt_identity
+from flask_jwt_extended import jwt_required,get_jwt_identity,verify_jwt_in_request
 from models.maestroDetalle import MaestroDetalle
 from models.pedido import Pedido
+from models.usuario import Usuario
 from schemas.pedidoSchema import pedidosSchema, pedidoSchema
 from resources.emailService import enviarEmailPedidoRecibido, enviarEmailPedidoEnviado, enviarEmailPedidoSeñado
 
 class PedidoListResource(Resource):
  
     def get(self):
-        pedidos = Pedido.get_all()
-        return pedidosSchema.dump(pedidos)
+        verify_jwt_in_request()
+        usuario=Usuario.get_by_id(get_jwt_identity())
+        if (usuario.tipoUsuario=="admin"):
+            pedidos = Pedido.get_all()
+            return pedidosSchema.dump(pedidos)
+        else:
+            return "No tienes permisos para acceder a estos datos."
   
     @jwt_required()
     def post(self):
@@ -57,7 +63,6 @@ class PedidoListResource(Resource):
 
         return pedidoSchema.dump(pedido), 201
 
-
 class PedidoResource(Resource):
 
     def get(self, idPedido):
@@ -84,14 +89,14 @@ class PedidoResource(Resource):
             pedido.transporte=form_data['transporte']
             enviarEmailPedidoEnviado(pedido.usuario.email, pedido.usuario.perfil.nombre, pedido.id, pedido.transporte, pedido.numeroGuia)
             pedido.estado='enviado'
-
         pedido.save(is_new=False)
 
         return 'editado'
   
 class PedidoPorUser(Resource):
     
-    def get(self, idUsuario):
-        pedido = Pedido.getPorIdUsuario(idUsuario)
+    def get(self):
+        verify_jwt_in_request()
+        pedido = Pedido.getPorIdUsuario(get_jwt_identity())
         return pedidosSchema.dump(pedido)
 

@@ -1,6 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.direccion import Direccion
-from models.pedido import Pedido
 from models.perfil import Perfil
 from config.db import db, BaseModelMixin
 

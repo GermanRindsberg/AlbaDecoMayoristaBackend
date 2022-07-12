@@ -1,5 +1,6 @@
 from config.db import db, BaseModelMixin
 from models.maestroDetalle import MaestroDetalle
+from models.usuario import Usuario
 
 
 class Pedido(db.Model, BaseModelMixin):
@@ -16,7 +17,7 @@ class Pedido(db.Model, BaseModelMixin):
     #FORANEAS
     maestroDetalle=db.relationship(MaestroDetalle, lazy='select', back_populates='pedido') 
     idUsuario=db.Column(db.Integer, db.ForeignKey("usuario.id"), unique=False)
-    usuario = db.relationship("Usuario", uselist=False)
+    usuario = db.relationship(Usuario, uselist=False)
     
     @classmethod
     def getPorIdUsuario(cls, idUsuario):

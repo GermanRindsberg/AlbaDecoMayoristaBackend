@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 import json
-
+from flask_jwt_extended import jwt_required
 from models.variante import Variante
 from models.foto import Foto
 from models.producto import Producto
@@ -13,7 +13,8 @@ class ProductoListResource(Resource):
         productos = Producto.get_all_activos()
         
         return productosSchema.dump(productos)
-
+    
+    @jwt_required()
     def post(self):
         
         form_data=request.form
@@ -39,10 +40,7 @@ class ProductoListResource(Resource):
         if form_data['idCategoria']:
             producto.idCategoria=form_data['idCategoria']
         producto.save(is_new=True)
-
-
         #Variantes
-
         if form_data['variantes']:
             listaVariantes= form_data['variantes'].split(",")
             for variantes in listaVariantes:
@@ -62,8 +60,6 @@ class ProductoListResource(Resource):
                 contador+=1
                 foto.save(is_new=True)
                 foto.guardarFoto(archivoAguardar, foto.id)
-
-   
         return productoSchema.dump(producto), 201
 
 
@@ -72,7 +68,7 @@ class ProductoResource(Resource):
     def get(self, productoId):
         producto = Producto.get_by_id(productoId)
         return productoSchema.dump(producto)
-
+    @jwt_required()
     def patch(self, productoId):
         form_data=request.form
         fotos=request.files
@@ -104,13 +100,23 @@ class ProductoResource(Resource):
         #Variantes
 
         if form_data['variantes']:
-            Variante.eliminarVariantePorIdProducto(productoId)
-            listaVariantes= form_data['variantes'].split(",")
-            for variantes in listaVariantes:
-                variante=Variante()
-                variante.color=variantes
-                variante.idProducto=producto.id
-                variante.save(is_new=True)
+            #Las variantes que vienen del front las guardo, si existe alguna en bbdd y no vienen del front las covierto en activo=0 asi no rompe Maestrodetalle
+            listaVariantes= form_data['variantes'].split(",")#lista de variantes que vienen del front
+            listacoloresExistentes=[]#lista de variantes que ya existen en bbdd
+            for varianteExistente in producto.variantes:
+                listacoloresExistentes.append(varianteExistente.color)
+            listaComparada=set(listacoloresExistentes) & set(listaVariantes)
+            for variante in producto.variantes:
+                if variante.color not in listaComparada:
+                    variante.activo=0
+                    variante.save(is_new=False)
+            for item in listaVariantes:
+                if item not in listaComparada:
+                    variante=Variante()
+                    variante.idProducto=producto.id
+                    variante.color=item
+                    variante.activo=1
+                    variante.save(is_new=True)
 
         #Fotos
 
@@ -137,7 +143,7 @@ class ProductoResource(Resource):
         Foto.eliminarFotosPorIdProducto(productoId,fotosNOborrar)
         return productoSchema.dump(producto), 201
   
-
+    @jwt_required()
     def delete(self, productoId):
          producto = Producto.get_by_id(productoId)
          producto.activo="inactivo"

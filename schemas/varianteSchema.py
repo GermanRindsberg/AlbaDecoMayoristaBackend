@@ -7,6 +7,7 @@ class VarianteSchema(ma.SQLAlchemySchema):
     id=ma.auto_field()
     color=ma.auto_field()
     idProducto=ma.auto_field()
+    activo=ma.auto_field()
     
 varianteSchema = VarianteSchema()
 variantesSchema = VarianteSchema(many=True)

@@ -16,7 +16,7 @@ class Foto(db.Model, BaseModelMixin):
     @classmethod
     def guardarFoto(self, archivoFoto, fotoId):
         foto= self.get_by_id(fotoId)
-        archivoFoto.save("backend/static/files/" + str(foto.id))
+        archivoFoto.save("static/fotosProductos/" + str(foto.id))
         foto.direccionImage=str(foto.id)
         foto.save(is_new=False)
         return foto
@@ -32,7 +32,7 @@ class Foto(db.Model, BaseModelMixin):
             if(foto.id not in valores):
                 Foto.delete(foto)
                 if foto.direccionImage:
-                    remove("backend/static/files/"+foto.direccionImage)
+                    remove("static/fotosProductos/"+foto.direccionImage)
         pass
 
     
